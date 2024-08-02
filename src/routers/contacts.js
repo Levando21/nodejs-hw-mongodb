@@ -12,11 +12,11 @@ const router = Router();
 
 router.get('/contacts', ctrlWrapper(getContactsController));
 router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
-router.post('/contacts', jsonParser, ctrlWrapper(createContactsController));
+router.post('/contacts', ctrlWrapper(createContactsController));
 router.delete('/contacts/:contactId', ctrlWrapper(deleteContactsController));
 router.patch(
   '/contacts/:contactId',
-  jsonParser,
+
   ctrlWrapper(updateContactsController),
 );
 export default router;
