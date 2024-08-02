@@ -1,12 +1,19 @@
 import express from 'express';
+
 import cors from 'cors';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
-import { ContactsCollection } from './db/models/contacts.js';
+
+import router from './routers/contacts.js';
+
+import { errorHandler } from './middlewares/errorHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 const logger = pino();
 export default function setupServer() {
   const app = express();
+
+  app.use(express.json());
 
   app.use(cors());
   app.use(pinoHttp({ logger }));
@@ -21,43 +28,11 @@ export default function setupServer() {
     res.json({ message: 'It is response new one' });
   });
 
-  app.get('/contacts', async (req, res) => {
-    try {
-      const contacts = await ContactsCollection.find();
-      res.json({
-        status: 200,
-        message: 'Successfully found contacts!',
-        data: contacts,
-      });
-    } catch (error) {
-      logger.error(error);
-      res.status(500).send({ status: 500, message: 'Internal Server Error' });
-    }
-  });
+  app.use(router);
 
-  app.get('/contacts/:contactId', async (req, res) => {
-    const { contactId } = req.params;
-    try {
-      const contact = await ContactsCollection.findById(contactId);
-      if (!contact) {
-        return res
-          .status(404)
-          .send({ status: 404, message: 'Contact not found' });
-      }
-      res.json({
-        status: 200,
-        message: 'Successfully found contact!',
-        data: contact,
-      });
-    } catch (error) {
-      logger.error(error);
-      res.status(500).send({ status: 500, message: 'Internal Server Error' });
-    }
-  });
+  app.use('*', notFoundHandler);
 
-  app.use((req, res, next) => {
-    res.status(404).send({ status: 404, message: 'Not found' });
-  });
+  app.use(errorHandler);
 
   app.listen(PORT, () => console.log(`Server started at port ${PORT}`));
 }
