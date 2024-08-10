@@ -25,7 +25,7 @@ export default function setupServer() {
   });
 
   app.get('/', (req, res) => {
-    res.json({ message: 'It is response new one!' });
+    res.json({ message: 'It is response new one!!' });
   });
 
   app.use(router);
