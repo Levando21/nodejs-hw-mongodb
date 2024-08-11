@@ -9,6 +9,9 @@ import createHttpError from 'http-errors';
 
 export const getContactsController = async (req, res, next) => {
   const contacts = await getContacts();
+  if (!contacts) {
+    throw createHttpError(404, 'Contact not found');
+  }
 
   res.status(200).json({
     status: 200,

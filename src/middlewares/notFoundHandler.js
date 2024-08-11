@@ -1,5 +1,6 @@
-export async function notFoundHandler(err, req, res, next) {
-  res
-    .status(404)
-    .send({ status: 404, message: 'Not found error', data: err.message });
-}
+export const notFoundHandler = (req, res, next) => {
+  res.status(404).json({
+    status: 404,
+    message: `Cannot ${req.method} ${req.originalUrl}`,
+  });
+};
