@@ -7,10 +7,12 @@ import {
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
 import { parsePaginationData } from '../utils/parsePaginationData.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
 
 export const getContactsController = async (req, res, next) => {
   const { page, perPage } = parsePaginationData(req.query);
-  const contacts = await getContacts({ page, perPage });
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const contacts = await getContacts({ page, perPage, sortBy, sortOrder });
 
   if (!contacts) {
     throw createHttpError(404, 'Contact not found');
