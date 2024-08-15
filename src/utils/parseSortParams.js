@@ -14,7 +14,7 @@ const sortContacts = (sortBy) => {
     'name',
     'phoneNumber',
     'email',
-    'isFavorite',
+    'isFavourite',
     'contactType',
   ];
   if (keyOfContact.includes(sortBy)) {
