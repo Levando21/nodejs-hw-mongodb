@@ -53,6 +53,6 @@ export const usersSchema = new Schema(
 
 export const UsersCollection = model('users', usersSchema);
 
-export const SessionsCollection = model('users', sessionSchema);
+export const SessionsCollection = model('sessions', sessionSchema);
 
 export const ContactsCollection = model('contacts', contactsSchema);
