@@ -7,17 +7,17 @@ import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { registerUserSchema, loginUserSchema } from '../validation /auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
-const router = Router();
+const authRouter = Router();
 
-router.post(
+authRouter.post(
   '/register',
   validateBody(registerUserSchema),
   ctrlWrapper(registerUserController),
 );
 
-router.post(
+authRouter.post(
   '/login',
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
 );
-export default router;
+export default authRouter;
