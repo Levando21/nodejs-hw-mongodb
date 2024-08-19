@@ -33,4 +33,4 @@ contactsRouter.patch(
   validateBody(updateContactSchema),
   ctrlWrapper(updateContactsController),
 );
-export default contactsRouter;
+export { contactsRouter };
