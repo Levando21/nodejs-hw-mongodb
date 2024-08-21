@@ -4,16 +4,19 @@ import cors from 'cors';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
 
-import router from './routers/mainRouter.js';
+import { contactsRouter } from './routers/contacts.js';
+import { authRouter } from './routers/auth.js';
 
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import cookieParser from 'cookie-parser';
 
 const logger = pino();
 export default function setupServer() {
   const app = express();
 
   app.use(express.json());
+  app.use(cookieParser());
 
   app.use(cors());
   app.use(pinoHttp({ logger }));
@@ -28,7 +31,8 @@ export default function setupServer() {
     res.json({ message: 'It is response new one!!' });
   });
 
-  app.use(router);
+  app.use('/contacts', contactsRouter);
+  app.use('/auth', authRouter);
 
   app.use('*', notFoundHandler);
 

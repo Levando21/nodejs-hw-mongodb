@@ -10,8 +10,8 @@ import {
 
 import { validateBody } from '../middlewares/validateBody.js';
 
-import { createContactSchema } from '../validation /contacts.js';
-import { updateContactSchema } from '../validation /contacts.js';
+import { createContactSchema } from '../validation/contacts.js';
+import { updateContactSchema } from '../validation/contacts.js';
 import { IsValidId } from '../middlewares/isValidId.js';
 
 const contactsRouter = Router();
@@ -23,7 +23,7 @@ contactsRouter.get(
   ctrlWrapper(getContactByIdController),
 );
 contactsRouter.post(
-  '/register',
+  '/',
   validateBody(createContactSchema),
   ctrlWrapper(createContactsController),
 );
