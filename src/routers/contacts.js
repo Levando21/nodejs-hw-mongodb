@@ -9,6 +9,7 @@ import {
 } from '../controllers/contacts.js';
 
 import { validateBody } from '../middlewares/validateBody.js';
+import { checkUser } from '../middlewares/checkUsers.js';
 
 import { createContactSchema } from '../validation/contacts.js';
 import { updateContactSchema } from '../validation/contacts.js';
@@ -22,6 +23,7 @@ contactsRouter.use(authenticate);
 contactsRouter.get('/', ctrlWrapper(getContactsController));
 contactsRouter.get(
   '/:contactId',
+  checkUser,
   IsValidId,
   ctrlWrapper(getContactByIdController),
 );
@@ -30,9 +32,14 @@ contactsRouter.post(
   validateBody(createContactSchema),
   ctrlWrapper(createContactsController),
 );
-contactsRouter.delete('/:contactId', ctrlWrapper(deleteContactsController));
+contactsRouter.delete(
+  '/:contactId',
+  checkUser,
+  ctrlWrapper(deleteContactsController),
+);
 contactsRouter.patch(
   '/:contactId',
+  checkUser,
   validateBody(updateContactSchema),
   ctrlWrapper(updateContactsController),
 );
