@@ -32,29 +32,29 @@ export const registerUser = async (payload) => {
 };
 
 export const loginUser = async (payload) => {
-  const userLoginByEmail = await UsersCollection.findOne({
+  const user = await UsersCollection.findOne({
     email: payload.email,
   });
 
-  if (!userLoginByEmail) {
+  if (!user) {
     throw createHttpError(404, 'User not found');
   }
 
   const cryptoHashCompare = await bcrypt.compare(
     payload.password,
-    userLoginByEmail.password,
+    user.password,
   );
 
   if (!cryptoHashCompare) {
     throw createHttpError(401, 'Incorrect password');
   }
 
-  await SessionsCollection.deleteOne({ userId: userLoginByEmail._id });
+  await SessionsCollection.deleteOne({ userId: user._id });
 
   const newSession = createSession();
 
   const session = await SessionsCollection.create({
-    userId: userLoginByEmail._id,
+    userId: user._id,
     ...newSession,
   });
 

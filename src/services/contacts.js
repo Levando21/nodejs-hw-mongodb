@@ -2,8 +2,8 @@ import { SORT_ORDER } from '../constans/index.js';
 import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationParams.js';
 
-export const createContacts = async (payload) => {
-  const contacts = await ContactsCollection.create(payload);
+export const createContacts = async (payload, userId) => {
+  const contacts = await ContactsCollection.create({ ...payload, userId });
   return contacts;
 };
 

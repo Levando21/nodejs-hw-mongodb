@@ -24,6 +24,10 @@ const contactsSchema = new Schema(
       default: 'personal',
       enum: ['work', 'home', 'personal'],
     },
+    userId: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -34,9 +38,9 @@ const contactsSchema = new Schema(
 export const sessionSchema = new Schema(
   {
     userId: { type: String, required: true },
-    acsessToken: { type: String, required: true },
+    accessToken: { type: String, required: true },
     refreshToken: { type: String, required: true },
-    acsessTokenValidUntil: { type: Date, required: true },
+    accessTokenValidUntil: { type: Date, required: true },
     refreshTokenValidUntil: { type: Date, required: true },
   },
   { timestamps: true, versionKey: false },
@@ -50,6 +54,12 @@ export const usersSchema = new Schema(
   },
   { timestamps: true, versionKey: false },
 );
+
+usersSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
 
 export const UsersCollection = model('users', usersSchema);
 
