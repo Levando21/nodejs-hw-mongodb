@@ -17,6 +17,12 @@ const createSession = () => {
 };
 
 export const registerUser = async (payload) => {
+  const existingUser = await UsersCollection.findOne({ email: payload.email });
+
+  if (existingUser) {
+    throw createHttpError(409, 'User already exists');
+  }
+
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
   const user = await UsersCollection.create({
@@ -62,7 +68,7 @@ export const loginUser = async (payload) => {
     throw createHttpError(500, 'Failed to create session');
   }
 
-  return session;
+  return { accessToken: session.accessToken };
 };
 
 export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
