@@ -10,6 +10,7 @@ import { authRouter } from './routers/auth.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import cookieParser from 'cookie-parser';
+import { SMTP } from './constans/index.js';
 
 const logger = pino();
 export default function setupServer() {
@@ -38,5 +39,7 @@ export default function setupServer() {
 
   app.use(errorHandler);
 
-  app.listen(PORT, () => console.log(`Server started at port ${PORT}`));
+  app.listen(PORT, () =>
+    console.log(`Server started at port ${PORT}, and SMTP is ON  ${SMTP.PORT}`),
+  );
 }

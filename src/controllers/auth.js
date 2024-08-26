@@ -3,6 +3,7 @@ import {
   loginUser,
   refreshUsersSession,
   logOutUser,
+  sendResetEmail,
 } from '../services/auth.js';
 import createHttpError from 'http-errors';
 import { ONE_DAY } from '../constans/index.js';
@@ -80,4 +81,11 @@ export const logOutUserController = async (req, res, next) => {
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+};
+
+export const sendResetEmailController = async (req, res) => {
+  const { email } = req.body;
+  await sendResetEmail(email);
+
+  res.send({ status: 200, message: 'Cool', data: {} });
 };

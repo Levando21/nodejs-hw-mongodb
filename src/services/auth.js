@@ -1,8 +1,9 @@
 import { UsersCollection, SessionsCollection } from '../db/models/contacts.js';
-import { FIFTEEN_MINUTES, ONE_DAY } from '../constans/index.js';
+import { FIFTEEN_MINUTES, ONE_DAY, SMTP } from '../constans/index.js';
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
+import { sendMail } from '../utils/sendEmail.js';
 
 const createSession = () => {
   const accessToken = randomBytes(30).toString('base64');
@@ -111,4 +112,18 @@ export const logOutUser = async (sessionId) => {
     throw createHttpError(500, 'failed');
   }
   return deleteSession;
+};
+
+export const sendResetEmail = async (email) => {
+  const user = UsersCollection.findOne({ email: email });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+  return await sendMail({
+    from: SMTP.FROM_EMAIL,
+    to: email,
+    subject: 'Reset your pass',
+    html: '<h1>Reset your pass</h1>',
+  });
 };
