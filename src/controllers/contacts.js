@@ -8,6 +8,9 @@ import {
 import createHttpError from 'http-errors';
 import { parsePaginationData } from '../utils/parsePaginationData.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getContactsController = async (req, res, next) => {
   const { page, perPage } = parsePaginationData(req.query);
@@ -52,10 +55,16 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactsController = async (req, res, next) => {
+  await fs.rename(
+    req.file.path,
+    path.resolve('src', 'public', req.file.filename),
+  );
   const { body } = req;
   const userId = req.user._id;
-  const newContact = await createContacts(body, userId);
+  const photo = req.file;
+  const photoUrl = await saveFileToCloudinary(photo);
 
+  const newContact = await createContacts(body, userId, photoUrl);
   if (!newContact) {
     throw createHttpError(404, 'Contact not found');
   }
@@ -88,9 +97,20 @@ export const updateContactsController = async (req, res, next) => {
   const { contactId } = req.params;
   const updatedPayload = req.body;
   const { _id: userId } = req.user; // Отримання userId із запиту
+  const photo = req.file;
+
+  let photoUrl;
+
+  if (photo) {
+    photoUrl = await saveFileToCloudinary(photo);
+  }
 
   // Оновлення контакту користувача за ID
-  const contact = await updateContact(contactId, updatedPayload, userId);
+  const contact = await updateContact(
+    contactId,
+    { ...updatedPayload, photo: photoUrl },
+    userId,
+  );
 
   if (!contact) {
     throw createHttpError(404, 'Contact not found');

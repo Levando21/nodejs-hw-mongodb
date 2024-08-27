@@ -12,6 +12,7 @@ export const createContactSchema = Joi.object({
     .valid('work', 'home', 'personal')
     .required(),
   userId: Joi.string().optional(),
+  photo: Joi.string().optional(),
 });
 
 export const updateContactSchema = Joi.object({

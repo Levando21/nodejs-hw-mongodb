@@ -12,3 +12,9 @@ export const SMTP = {
   PASSWORD: process.env.SMTP_PASSWORD,
   FROM_EMAIL: process.env.SMTP_FROM_EMAIL,
 };
+
+export const CLOUDINARY = {
+  CLOUD_NAME: process.env.CLOUD_NAME,
+  API_KEY: process.env.API_KEY,
+  API_SECRET: process.env.API_SECRET,
+};
