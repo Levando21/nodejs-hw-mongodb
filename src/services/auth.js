@@ -4,6 +4,11 @@ import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { sendMail } from '../utils/sendEmail.js';
+import jwt from 'jsonwebtoken';
+import fs from 'node:fs';
+import path from 'node:path';
+import handlebars from 'handlebars';
+import crypto from 'node:crypto';
 
 const createSession = () => {
   const accessToken = randomBytes(30).toString('base64');
@@ -117,6 +122,21 @@ export const logOutUser = async (sessionId) => {
 export const sendResetEmail = async (email) => {
   const user = UsersCollection.findOne({ email: email });
 
+  const resetToken = jwt.sign(
+    {
+      sub: user._id,
+      email: user.email,
+    },
+    process.env.JWT_SECRET,
+  );
+
+  const templateSource = fs.readFileSync(
+    path.resolve('src/templates/reset-password.hbs'),
+    { encoding: 'UTF-8' },
+  );
+  const template = handlebars.compile(templateSource);
+  const html = template({ name: user.name, resetToken });
+
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
@@ -124,6 +144,32 @@ export const sendResetEmail = async (email) => {
     from: SMTP.FROM_EMAIL,
     to: email,
     subject: 'Reset your pass',
-    html: '<h1>Reset your pass</h1>',
+    html,
   });
+};
+
+export const resetPassword = async (password, token) => {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  const user = await UsersCollection.findOne({
+    _id: decoded.sub,
+    email: decoded.email,
+  });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const hashedPassword = bcrypt.hash(password, 10);
+  const updatedUser = await UsersCollection.findOneAndUpdate(
+    { _id: user._id },
+    { password: hashedPassword },
+    { new: true },
+  );
+
+  if (!updatedUser) {
+    throw createHttpError(401, 'Token is expired or invalid.');
+  }
+
+  return updatedUser;
 };
