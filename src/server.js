@@ -11,6 +11,7 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import cookieParser from 'cookie-parser';
 import { SMTP } from './constans/index.js';
+import { UPLOAD_DIR } from './constans/index.js';
 
 const logger = pino();
 export default function setupServer() {
@@ -18,6 +19,7 @@ export default function setupServer() {
 
   app.use(express.json());
   app.use(cookieParser());
+  app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use(cors());
   app.use(pinoHttp({ logger }));

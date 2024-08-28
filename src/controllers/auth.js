@@ -95,7 +95,7 @@ export const sendResetEmailController = async (req, res) => {
   });
 };
 
-export const resetPasswordController = async (res, req) => {
+export const resetPasswordController = async (req, res) => {
   const { password, token } = req.body;
   await resetPassword(password, token);
 

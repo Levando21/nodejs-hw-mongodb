@@ -160,7 +160,7 @@ export const resetPassword = async (password, token) => {
     throw createHttpError(404, 'User not found');
   }
 
-  const hashedPassword = bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
   const updatedUser = await UsersCollection.findOneAndUpdate(
     { _id: user._id },
     { password: hashedPassword },

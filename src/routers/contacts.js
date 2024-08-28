@@ -40,6 +40,7 @@ contactsRouter.delete(
 );
 contactsRouter.patch(
   '/:contactId',
+  upload.single('photo'),
   checkUser,
   validateBody(updateContactSchema),
   ctrlWrapper(updateContactsController),

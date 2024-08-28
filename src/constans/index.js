@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
+import path from 'node:path';
 export const SORT_ORDER = { ASC: 'asc', DESC: 'desc' };
 
 export const FIFTEEN_MINUTES = 15 * 60 * 1000;
@@ -18,3 +19,6 @@ export const CLOUDINARY = {
   API_KEY: process.env.API_KEY,
   API_SECRET: process.env.API_SECRET,
 };
+
+export const TEMP_UPLOAD_DIR = path.join(process.cwd(), 'temp');
+export const UPLOAD_DIR = path.join(process.cwd(), 'uploads');

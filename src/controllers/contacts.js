@@ -11,7 +11,9 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
-
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import dotenv from 'dotenv';
+dotenv.config();
 export const getContactsController = async (req, res, next) => {
   const { page, perPage } = parsePaginationData(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
@@ -55,14 +57,20 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactsController = async (req, res, next) => {
-  await fs.rename(
-    req.file.path,
-    path.resolve('src', 'public', req.file.filename),
-  );
   const { body } = req;
   const userId = req.user._id;
+
   const photo = req.file;
-  const photoUrl = await saveFileToCloudinary(photo);
+
+  let photoUrl;
+
+  if (photo) {
+    if (process.env.ENABLE_CLOUDINARY === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
 
   const newContact = await createContacts(body, userId, photoUrl);
   if (!newContact) {
@@ -102,7 +110,11 @@ export const updateContactsController = async (req, res, next) => {
   let photoUrl;
 
   if (photo) {
-    photoUrl = await saveFileToCloudinary(photo);
+    if (process.env.ENABLE_CLOUDINARY === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
   }
 
   // Оновлення контакту користувача за ID
