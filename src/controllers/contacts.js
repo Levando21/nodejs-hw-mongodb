@@ -8,10 +8,9 @@ import {
 import createHttpError from 'http-errors';
 import { parsePaginationData } from '../utils/parsePaginationData.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
-import fs from 'node:fs';
-import path from 'node:path';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+
 import dotenv from 'dotenv';
 dotenv.config();
 export const getContactsController = async (req, res, next) => {
@@ -57,9 +56,6 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactsController = async (req, res, next) => {
-  const { body } = req;
-  const userId = req.user._id;
-
   const photo = req.file;
 
   let photoUrl;
@@ -71,16 +67,22 @@ export const createContactsController = async (req, res, next) => {
       photoUrl = await saveFileToUploadDir(photo);
     }
   }
+  const createdContact = await createContacts({
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    isFavourite: req.body.isFavourite,
+    contactType: req.body.contactType,
+    userId: req.user._id,
+    photo: photoUrl,
+  });
 
-  const newContact = await createContacts(body, userId, photoUrl);
-  if (!newContact) {
-    throw createHttpError(404, 'Contact not found');
-  }
+  console.log(photoUrl);
 
   res.status(201).json({
     status: 201,
-    message: 'Successfully created contact!',
-    data: newContact,
+    message: `Successfully created contact for ${req.user.name}!`,
+    data: createdContact,
   });
 };
 
@@ -103,8 +105,7 @@ export const deleteContactsController = async (req, res, next) => {
 
 export const updateContactsController = async (req, res, next) => {
   const { contactId } = req.params;
-  const updatedPayload = req.body;
-  const { _id: userId } = req.user; // Отримання userId із запиту
+  const userId = req.user._id;
   const photo = req.file;
 
   let photoUrl;
@@ -117,20 +118,18 @@ export const updateContactsController = async (req, res, next) => {
     }
   }
 
-  // Оновлення контакту користувача за ID
-  const contact = await updateContact(
-    contactId,
-    { ...updatedPayload, photo: photoUrl },
-    userId,
-  );
+  const result = await updateContact(contactId, userId, {
+    ...req.body,
+    photo: photoUrl,
+  });
 
-  if (!contact) {
-    throw createHttpError(404, 'Contact not found');
+  if (result === null) {
+    next(createHttpError(404, 'Contact not found'));
   }
 
   res.status(200).json({
     status: 200,
-    message: 'Successfully updated contact!',
-    data: contact,
+    message: `Successfully updated the contact for ${req.user.name}!`,
+    data: result,
   });
 };

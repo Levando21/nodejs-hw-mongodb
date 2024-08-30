@@ -123,8 +123,7 @@ export const logOutUser = async (sessionId) => {
 
 export const sendResetEmail = async (email) => {
   const user = await UsersCollection.findOne({ email: email });
-  console.log(email);
-  console.log(!user);
+
 
   const resetToken = jwt.sign(
     {
@@ -156,16 +155,14 @@ export const sendResetEmail = async (email) => {
 export const resetPassword = async (password, token) => {
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  console.log(password);
-  console.log(process.env.JWT_SECRET);
-  console.log('Token decoded:', decoded);
+
 
   const user = await UsersCollection.findOne({
     _id: decoded.sub,
     email: decoded.email,
   });
 
-  console.log(user);
+
 
   if (user === null) {
     throw createHttpError(404, 'User not found');
@@ -181,7 +178,7 @@ export const resetPassword = async (password, token) => {
   if (!updatedUser) {
     throw createHttpError(401, 'Token is expired or invalid.');
   }
-  console.log(updatedUser);
+
 
   return updatedUser;
 };
