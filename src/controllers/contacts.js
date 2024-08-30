@@ -8,7 +8,7 @@ import {
 import createHttpError from 'http-errors';
 import { parsePaginationData } from '../utils/parsePaginationData.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
-import { saveFileToCloudinary } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 import dotenv from 'dotenv';
