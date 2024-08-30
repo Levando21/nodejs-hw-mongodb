@@ -8,7 +8,7 @@ import {
 import createHttpError from 'http-errors';
 import { parsePaginationData } from '../utils/parsePaginationData.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
-import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { saveFileToCloudinary } from '../utils/saveFileToUploadDir.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 import dotenv from 'dotenv';
@@ -124,7 +124,7 @@ export const updateContactsController = async (req, res, next) => {
   });
 
   if (result === null) {
-    next(createHttpError(404, 'Contact not found'));
+    throw createHttpError(404, 'Contact not found');
   }
 
   res.status(200).json({
