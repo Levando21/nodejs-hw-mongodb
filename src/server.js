@@ -19,7 +19,6 @@ export default function setupServer() {
 
   app.use(express.json());
   app.use(cookieParser());
-  app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use(cors());
   app.use(pinoHttp({ logger }));
@@ -36,6 +35,7 @@ export default function setupServer() {
 
   app.use('/contacts', contactsRouter);
   app.use('/auth', authRouter);
+  app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use('*', notFoundHandler);
 

@@ -129,7 +129,7 @@ export const sendResetEmail = async (email) => {
       sub: user._id,
       email: user.email,
     },
-    process.env.SMTP.JWT_SECRET,
+    SMTP.JWT_SECRET,
   );
 
   const templateSource = fs.readFileSync(
@@ -144,7 +144,7 @@ export const sendResetEmail = async (email) => {
     throw createHttpError(404, 'User not found');
   }
   return await sendMail({
-    from: process.env.SMTP.FROM_EMAIL,
+    from: SMTP.FROM_EMAIL,
     to: email,
     subject: 'Reset your pass',
     html,
@@ -152,7 +152,7 @@ export const sendResetEmail = async (email) => {
 };
 
 export const resetPassword = async (password, token) => {
-  const decoded = jwt.verify(token, process.env.SMTP.JWT_SECRET);
+  const decoded = jwt.verify(token, SMTP.JWT_SECRET);
 
   const user = await UsersCollection.findOne({
     _id: decoded.sub,

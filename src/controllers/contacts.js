@@ -62,14 +62,14 @@ export const createContactsController = async (req, res, next) => {
   let photoUrl;
 
   if (photo) {
-    if (process.env.CLOUDINARY.ENABLE_CLOUDINARY === 'true') {
+    if (CLOUDINARY.ENABLE_CLOUDINARY === 'true') {
       photoUrl = await saveFileToCloudinary(photo);
     } else {
       photoUrl = await saveFileToUploadDir(photo);
     }
   }
 
-  console.log('ENABLE_CLOUDINARY:', process.env.CLOUDINARY.ENABLE_CLOUDINARY);
+  console.log('ENABLE_CLOUDINARY:', CLOUDINARY.ENABLE_CLOUDINARY);
   const createdContact = await createContacts({
     name: req.body.name,
     phoneNumber: req.body.phoneNumber,
@@ -114,7 +114,7 @@ export const updateContactsController = async (req, res, next) => {
   let photoUrl;
 
   if (photo) {
-    if (process.env.CLOUDINARY.ENABLE_CLOUDINARY === 'true') {
+    if (CLOUDINARY.ENABLE_CLOUDINARY === 'true') {
       photoUrl = await saveFileToCloudinary(photo);
     } else {
       photoUrl = await saveFileToUploadDir(photo);
