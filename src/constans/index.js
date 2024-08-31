@@ -12,12 +12,14 @@ export const SMTP = {
   USER: process.env.SMTP_USER,
   PASSWORD: process.env.SMTP_PASSWORD,
   FROM_EMAIL: process.env.SMTP_FROM_EMAIL,
+  JWT_SECRET: process.env.JWT_SECRET,
 };
 
 export const CLOUDINARY = {
   CLOUD_NAME: process.env.CLOUD_NAME,
   API_KEY: process.env.API_KEY,
   API_SECRET: process.env.API_SECRET,
+  ENABLE_CLOUDINARY: process.env.ENABLE_CLOUDINARY,
 };
 
 export const TEMP_UPLOAD_DIR = path.join(process.cwd(), 'temp');

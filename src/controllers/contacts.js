@@ -10,6 +10,8 @@ import { parsePaginationData } from '../utils/parsePaginationData.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { CLOUDINARY } from '../constans/index.js';
+import { env } from '../utils/env.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -61,12 +63,14 @@ export const createContactsController = async (req, res, next) => {
   let photoUrl;
 
   if (photo) {
-    if (process.env.ENABLE_CLOUDINARY === 'true') {
+    if (env(CLOUDINARY.ENABLE_CLOUDINARY) === 'true') {
       photoUrl = await saveFileToCloudinary(photo);
     } else {
       photoUrl = await saveFileToUploadDir(photo);
     }
   }
+
+  console.log('ENABLE_CLOUDINARY:', env(CLOUDINARY.ENABLE_CLOUDINARY));
   const createdContact = await createContacts({
     name: req.body.name,
     phoneNumber: req.body.phoneNumber,
@@ -111,7 +115,7 @@ export const updateContactsController = async (req, res, next) => {
   let photoUrl;
 
   if (photo) {
-    if (process.env.ENABLE_CLOUDINARY === 'true') {
+    if (env(CLOUDINARY.ENABLE_CLOUDINARY) === 'true') {
       photoUrl = await saveFileToCloudinary(photo);
     } else {
       photoUrl = await saveFileToUploadDir(photo);

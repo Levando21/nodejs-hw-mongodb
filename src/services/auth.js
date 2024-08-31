@@ -8,8 +8,7 @@ import jwt from 'jsonwebtoken';
 import fs from 'node:fs';
 import path from 'node:path';
 import handlebars from 'handlebars';
-import dotenv from 'dotenv';
-dotenv.config();
+import env from '../utils/env.js';
 import crypto from 'node:crypto';
 
 const createSession = () => {
@@ -124,13 +123,12 @@ export const logOutUser = async (sessionId) => {
 export const sendResetEmail = async (email) => {
   const user = await UsersCollection.findOne({ email: email });
 
-
   const resetToken = jwt.sign(
     {
       sub: user._id,
       email: user.email,
     },
-    process.env.JWT_SECRET,
+    env(SMTP.JWT_SECRET),
   );
 
   const templateSource = fs.readFileSync(
@@ -145,7 +143,7 @@ export const sendResetEmail = async (email) => {
     throw createHttpError(404, 'User not found');
   }
   return await sendMail({
-    from: SMTP.FROM_EMAIL,
+    from: env(SMTP.FROM_EMAIL),
     to: email,
     subject: 'Reset your pass',
     html,
@@ -153,16 +151,12 @@ export const sendResetEmail = async (email) => {
 };
 
 export const resetPassword = async (password, token) => {
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-
+  const decoded = jwt.verify(token, env(SMTP.JWT_SECRET));
 
   const user = await UsersCollection.findOne({
     _id: decoded.sub,
     email: decoded.email,
   });
-
-
 
   if (user === null) {
     throw createHttpError(404, 'User not found');
@@ -178,7 +172,6 @@ export const resetPassword = async (password, token) => {
   if (!updatedUser) {
     throw createHttpError(401, 'Token is expired or invalid.');
   }
-
 
   return updatedUser;
 };
