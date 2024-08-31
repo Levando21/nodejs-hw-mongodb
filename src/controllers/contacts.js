@@ -13,8 +13,6 @@ import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { CLOUDINARY } from '../constans/index.js';
 import { env } from '../utils/env.js';
 
-import dotenv from 'dotenv';
-dotenv.config();
 export const getContactsController = async (req, res, next) => {
   const { page, perPage } = parsePaginationData(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
