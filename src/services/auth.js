@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken';
 import fs from 'node:fs';
 import path from 'node:path';
 import handlebars from 'handlebars';
-import env from '../utils/env.js';
+import { env } from '../utils/env.js';
 import crypto from 'node:crypto';
 
 const createSession = () => {
