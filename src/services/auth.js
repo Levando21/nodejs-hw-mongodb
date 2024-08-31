@@ -8,7 +8,8 @@ import jwt from 'jsonwebtoken';
 import fs from 'node:fs';
 import path from 'node:path';
 import handlebars from 'handlebars';
-import { env } from '../utils/env.js';
+import dotenv from 'dotenv';
+dotenv.config();
 import crypto from 'node:crypto';
 
 const createSession = () => {
@@ -128,7 +129,7 @@ export const sendResetEmail = async (email) => {
       sub: user._id,
       email: user.email,
     },
-    env(SMTP.JWT_SECRET),
+    process.env.SMTP.JWT_SECRET,
   );
 
   const templateSource = fs.readFileSync(
@@ -143,7 +144,7 @@ export const sendResetEmail = async (email) => {
     throw createHttpError(404, 'User not found');
   }
   return await sendMail({
-    from: env(SMTP.FROM_EMAIL),
+    from: process.env.SMTP.FROM_EMAIL,
     to: email,
     subject: 'Reset your pass',
     html,
@@ -151,7 +152,7 @@ export const sendResetEmail = async (email) => {
 };
 
 export const resetPassword = async (password, token) => {
-  const decoded = jwt.verify(token, env(SMTP.JWT_SECRET));
+  const decoded = jwt.verify(token, process.env.SMTP.JWT_SECRET);
 
   const user = await UsersCollection.findOne({
     _id: decoded.sub,
