@@ -8,14 +8,12 @@ export const saveFileToUploadDir = async (file) => {
   const tempFilePath = path.join(TEMP_UPLOAD_DIR, file.filename);
   const uploadFilePath = path.join(UPLOAD_DIR, file.filename);
 
-  // Check if the file exists in the temporary directory
   try {
     await fs.access(tempFilePath);
   } catch (error) {
     throw new Error(`File not found in temp directory: ${tempFilePath}`);
   }
 
-  // Attempt to rename (move) the file
   try {
     await fs.rename(tempFilePath, uploadFilePath);
   } catch (error) {
