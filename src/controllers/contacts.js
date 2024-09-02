@@ -70,15 +70,17 @@ export const createContactsController = async (req, res, next) => {
   }
 
   console.log('ENABLE_CLOUDINARY:', CLOUDINARY.ENABLE_CLOUDINARY);
-  const createdContact = await createContacts({
-    name: req.body.name,
-    phoneNumber: req.body.phoneNumber,
-    email: req.body.email,
-    isFavourite: req.body.isFavourite,
-    contactType: req.body.contactType,
-    userId: req.user._id,
-    photo: photoUrl,
-  });
+  const createdContact = await createContacts(
+    {
+      name: req.body.name,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email,
+      isFavourite: req.body.isFavourite,
+      contactType: req.body.contactType,
+      photo: photoUrl,
+    },
+    req.user._id,
+  );
 
   console.log(photoUrl);
 
