@@ -5,9 +5,11 @@ import {
   logOutUser,
   sendResetEmail,
   resetPassword,
+  loginOrRegisterWithGoogle,
 } from '../services/auth.js';
 import createHttpError from 'http-errors';
 import { ONE_DAY } from '../constans/index.js';
+import { genereateAuthUrl } from '../utils/googleOAuth.js';
 
 export const registerUserController = async (req, res, next) => {
   const user = await registerUser(req.body);
@@ -103,5 +105,24 @@ export const resetPasswordController = async (req, res) => {
     status: 200,
     message: 'Successfully reset password',
     data: {},
+  });
+};
+
+export const getOAuthUrlController = async (req, res) => {
+  const url = genereateAuthUrl();
+  res.send({
+    status: 200,
+    message: 'Successfully created Oauth Url',
+    data: { url },
+  });
+};
+
+export const confirmOAuthController = async (req, res) => {
+  const { code } = req.body;
+  const register = await loginOrRegisterWithGoogle(code);
+  res.send({
+    status: 200,
+    message: 'Succsessfully confirmed oauth',
+    data: register,
   });
 };

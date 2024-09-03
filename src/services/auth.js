@@ -11,6 +11,7 @@ import handlebars from 'handlebars';
 import dotenv from 'dotenv';
 dotenv.config();
 import crypto from 'node:crypto';
+import { validateCode } from '../utils/googleOAuth.js';
 
 const createSession = () => {
   const accessToken = randomBytes(30).toString('base64');
@@ -175,4 +176,29 @@ export const resetPassword = async (password, token) => {
   }
 
   return updatedUser;
+};
+
+export const loginOrRegisterWithGoogle = async (code) => {
+  const ticket = await validateCode(code);
+  const payload = ticket.getPayload();
+  console.log(ticket);
+
+  if (typeof payload === 'undefined') {
+    throw createHttpError(401, 'Unauthorized');
+  }
+
+  const user = await UsersCollection.findOne({ email: payload.email });
+  const password = await bcrypt.hash(
+    crypto.randomBytes(30).toString('base64'),
+    10,
+  );
+  if (user === null) {
+    await UsersCollection.create({
+      email: payload.email,
+      name: payload.name,
+      password,
+    });
+  }
+
+  console.log(payload);
 };
