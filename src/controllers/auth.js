@@ -119,10 +119,12 @@ export const getOAuthUrlController = async (req, res) => {
 
 export const confirmOAuthController = async (req, res) => {
   const { code } = req.body;
-  const register = await loginOrRegisterWithGoogle(code);
+  const session = await loginOrRegisterWithGoogle(code);
+
+  setupSession(res, session);
   res.send({
     status: 200,
     message: 'Succsessfully confirmed oauth',
-    data: register,
+    data: session,
   });
 };

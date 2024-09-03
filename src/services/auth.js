@@ -179,26 +179,48 @@ export const resetPassword = async (password, token) => {
 };
 
 export const loginOrRegisterWithGoogle = async (code) => {
-  const ticket = await validateCode(code);
-  const payload = ticket.getPayload();
-  console.log(ticket);
+  try {
+    const ticket = await validateCode(code);
+    const payload = ticket.getPayload();
 
-  if (typeof payload === 'undefined') {
-    throw createHttpError(401, 'Unauthorized');
-  }
+    if (!payload) {
+      throw createHttpError(401, 'Unauthorized');
+    }
 
-  const user = await UsersCollection.findOne({ email: payload.email });
-  const password = await bcrypt.hash(
-    crypto.randomBytes(30).toString('base64'),
-    10,
-  );
-  if (user === null) {
-    await UsersCollection.create({
-      email: payload.email,
-      name: payload.name,
-      password,
+    let user = await UsersCollection.findOne({ email: payload.email });
+
+    if (!user) {
+      const password = await bcrypt.hash(
+        crypto.randomBytes(30).toString('base64'),
+        10,
+      );
+      user = await UsersCollection.create({
+        email: payload.email,
+        name: payload.name,
+        password,
+      });
+
+      if (!user) {
+        throw createHttpError(500, 'Failed to create user');
+      }
+    }
+
+    await SessionsCollection.deleteMany({ userId: user._id });
+
+    const newSession = createSession();
+
+    const session = await SessionsCollection.create({
+      userId: user._id,
+      ...newSession,
     });
-  }
 
-  console.log(payload);
+    if (!session) {
+      throw createHttpError(500, 'Failed to create session');
+    }
+
+    return session;
+  } catch (error) {
+    console.error('Error during Google login or registration:', error.message);
+    throw error;
+  }
 };
