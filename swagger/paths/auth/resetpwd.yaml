@@ -12,8 +12,8 @@ requestBody:
       schema:
         type: object
         required:
-        - password
-        - token
+          - password
+          - token
         properties:
           password:
             description: 'New password'
@@ -49,4 +49,4 @@ responses:
   '404':
     $ref: '../../components/responses/404.yaml'
   '500':
-    $ref: '../../components/responses/500.yaml'x
+    $ref: '../../components/responses/500.yaml'

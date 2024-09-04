@@ -7,14 +7,13 @@ content:
         - status
         - message
         - data
-        properties:
-          status:
-            type: integer
-            example: 403
-          message:
-            type: string
-            example: Forbidden to access the contact
-          data:
-            type: object
-            example: {}
-
+      properties:
+        status:
+          type: integer
+          example: 403
+        message:
+          type: string
+          example: Forbidden to access the contact
+        data:
+          type: object
+          example: {}
