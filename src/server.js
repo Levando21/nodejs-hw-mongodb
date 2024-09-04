@@ -12,6 +12,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import cookieParser from 'cookie-parser';
 import { SMTP } from './constans/index.js';
 import { UPLOAD_DIR } from './constans/index.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 const logger = pino();
 export default function setupServer() {
@@ -36,6 +37,7 @@ export default function setupServer() {
   app.use('/contacts', contactsRouter);
   app.use('/auth', authRouter);
   app.use('/uploads', express.static(UPLOAD_DIR));
+  app.use('/api-docs', swaggerDocs());
 
   app.use('*', notFoundHandler);
 
