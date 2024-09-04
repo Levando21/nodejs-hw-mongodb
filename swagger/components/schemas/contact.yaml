@@ -2,6 +2,7 @@ type: object
 required:
   - _id
   - name
+  - email
   - phoneNumber
   - contactType
 properties:
@@ -21,7 +22,7 @@ properties:
   email:
     description: 'The email of the contact'
     type: string
-    example: 'johndoe@gmail.com'
+    example: 'jim-malk22@gmail.com'
   isFavorite:
     description: 'Indicates whether the contact is marked as a favorite'
     type: boolean

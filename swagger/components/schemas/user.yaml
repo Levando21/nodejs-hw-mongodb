@@ -12,12 +12,12 @@ properties:
   name:
     description: 'Username'
     type: string
-    example: 'John Doe'
+    example: 'Jim Malkovich'
   email:
     description: 'E-mail address'
     type: string
-    example: 'John_Doe@gmail.com'
+    example: 'Jim_Malk@gmail.com'
   password:
     description: 'Password'
     type: string
-    example: 'examplepwd12345'
+    example: 'patternpwdr5432'
