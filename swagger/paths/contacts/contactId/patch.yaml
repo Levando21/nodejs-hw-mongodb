@@ -42,6 +42,9 @@ requestBody:
             description: 'The photo of the contact'
             type: string
             format: binary
+          isFavourite:
+            description: 'Indicates whether the contact is marked as a favorite. True if the contact is a favorite, false otherwise.'
+            type: boolean
         additionalProperties: false
     application/json:
       schema:
